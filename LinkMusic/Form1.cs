@@ -21,8 +21,9 @@ namespace LinkMusic
 
         private void LoadPreference()
         {
-            var device = Preference.ReadValue("defValue", "remoteAddress", "");
+            device = Preference.ReadValue("defValue", "remoteAddress", "");
             this.textBox1.Text = device;
+            RefreshNotifyText();
         }
 
         private void CheckRightClickEvent(object sender, MouseEventArgs e)
@@ -64,7 +65,7 @@ namespace LinkMusic
             this.textBox1.Text = Temp;
             device = Temp;
             Preference.SaveValue("defValue", "remoteAddress", device);
-            if (device.Length == 0)
+            if (device.Length != 0)
             {
                 MessageBox.Show("Target:\n" + Temp, "Save success!", MessageBoxButtons.OK);
             }
@@ -72,6 +73,11 @@ namespace LinkMusic
             {
                 MessageBox.Show("Target: Default device", "Save success!", MessageBoxButtons.OK);
             }
+            RefreshNotifyText();
+        }
+
+        private void RefreshNotifyText()
+        {
             string notifyIconHead = "Adb audio controller\nCreated by cxDosx\nLink adb:";
             int len = device.Length + notifyIconHead.Length;
             if (len == notifyIconHead.Length)
