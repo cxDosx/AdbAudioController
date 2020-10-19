@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LinkMusic
@@ -17,11 +11,18 @@ namespace LinkMusic
         public Form1()
         {
             InitializeComponent();
+            LoadPreference();
 
             this.FormClosing += Form1_FormClosing;
 
             this.notifyIcon1.MouseDoubleClick += NotifyIconDoubleClick;
             this.notifyIcon1.MouseClick += CheckRightClickEvent;
+        }
+
+        private void LoadPreference()
+        {
+            var device = Preference.ReadValue("defValue", "remoteAddress", "");
+            this.textBox1.Text = device;
         }
 
         private void CheckRightClickEvent(object sender, MouseEventArgs e)
@@ -62,22 +63,53 @@ namespace LinkMusic
             string Temp = this.textBox1.Text.Trim();
             this.textBox1.Text = Temp;
             device = Temp;
-            MessageBox.Show("Your device set:\n" + Temp, "Save success!", MessageBoxButtons.OK);
+            Preference.SaveValue("defValue", "remoteAddress", device);
             if (device.Length == 0)
             {
-                notifyIcon1.Text = "Adb audio controller\nCreated by cxDosx";
+                MessageBox.Show("Target:\n" + Temp, "Save success!", MessageBoxButtons.OK);
             }
             else
             {
-                notifyIcon1.Text = "Adb audio controller\nCreated by cxDosx\nLink adb:" + device;
+                MessageBox.Show("Target: Default device", "Save success!", MessageBoxButtons.OK);
             }
+            string notifyIconHead = "Adb audio controller\nCreated by cxDosx\nLink adb:";
+            int len = device.Length + notifyIconHead.Length;
+            if (len == notifyIconHead.Length)
+            {
+                SetNotifyIconText(notifyIcon1, notifyIconHead + "Default device");
+            }
+            else if (len < 64)
+            {
+                notifyIcon1.Text = notifyIconHead + device;
+            }
+            else if (len < 128)
+            {
+                SetNotifyIconText(notifyIcon1, notifyIconHead + device);
+            }
+            else
+            {
+                SetNotifyIconText(notifyIcon1, "Adb audio controller\nCreate by cxDosx\nYou already set a device");
+            }
+        }
+
+        private void SetNotifyIconText(NotifyIcon notifyIcon, string text)
+        {
+            if (text.Length >= 128)
+            {
+                return;
+            }
+            Type t = typeof(NotifyIcon);
+            BindingFlags hidden = BindingFlags.NonPublic | BindingFlags.Instance;
+            t.GetField("text", hidden).SetValue(notifyIcon, text);
+            if ((bool)t.GetField("added", hidden).GetValue(notifyIcon))
+                t.GetMethod("UpdateIcon", hidden).Invoke(notifyIcon, new object[] { true });
         }
 
 
         private void ControlAudioPlayStatus(PlayStatus status)
         {
             string Command = "adb";
-            if(device.Length != 0)
+            if (device.Length != 0)
             {
                 Command += " -s ";
                 Command += device;
@@ -134,7 +166,7 @@ namespace LinkMusic
             RegisterHotKey(this.Handle, 0x02, 3, Keys.Left); // PrevHotKey
             RegisterHotKey(this.Handle, 0x03, 3, Keys.Down); // PauseHotKey
             RegisterHotKey(this.Handle, 0x04, 3, Keys.Up); // PlayHotKey
-            
+
         }
 
 
@@ -155,7 +187,7 @@ namespace LinkMusic
                     switch (param)
                     {
                         case 0x01: //Next
-                            NextToolStripMenuItem_Click(null,null);
+                            NextToolStripMenuItem_Click(null, null);
                             break;
                         case 0x02: //Prev
                             PrevToolStripMenuItem_Click(null, null);

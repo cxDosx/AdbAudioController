@@ -152,12 +152,14 @@ namespace LinkMusic
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem playPauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nextToolStripMenuItem;
+        private ToolStripMenuItem pauseToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem prevToolStripMenuItem;
         private ToolStripMenuItem stopToolStripMenuItem;
 
+
         private string device = "";
-        private ToolStripMenuItem pauseToolStripMenuItem;
+        private string PreferenceFileName = "config.ini";
     }
 }
 
