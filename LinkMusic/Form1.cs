@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -62,6 +63,14 @@ namespace LinkMusic
             this.textBox1.Text = Temp;
             device = Temp;
             MessageBox.Show("Your device set:\n" + Temp, "Save success!", MessageBoxButtons.OK);
+            if (device.Length == 0)
+            {
+                notifyIcon1.Text = "Adb audio controller\nCreated by cxDosx";
+            }
+            else
+            {
+                notifyIcon1.Text = "Adb audio controller\nCreated by cxDosx\nLink adb:" + device;
+            }
         }
 
 
@@ -118,6 +127,58 @@ namespace LinkMusic
         {
             ControlAudioPlayStatus(PlayStatus.NEXT);
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            RegisterHotKey(this.Handle, 0x01, 3, Keys.Right); // NextHotKey
+            RegisterHotKey(this.Handle, 0x02, 3, Keys.Left); // PrevHotKey
+            RegisterHotKey(this.Handle, 0x03, 3, Keys.Down); // PauseHotKey
+            RegisterHotKey(this.Handle, 0x04, 3, Keys.Up); // PlayHotKey
+            
+        }
+
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            UnregisterHotKey(this.Handle, 0x01);
+            UnregisterHotKey(this.Handle, 0x02);
+            UnregisterHotKey(this.Handle, 0x03);
+            UnregisterHotKey(this.Handle, 0x04);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                case 0x0312:
+                    int param = m.WParam.ToInt32();
+                    switch (param)
+                    {
+                        case 0x01: //Next
+                            NextToolStripMenuItem_Click(null,null);
+                            break;
+                        case 0x02: //Prev
+                            PrevToolStripMenuItem_Click(null, null);
+                            break;
+                        case 0x03: //Pause
+                            PauseToolStripMenuItem_Click(null, null);
+                            break;
+                        case 0x04: //Play
+                            PlayPauseToolStripMenuItem_Click(null, null);
+                            break;
+                    }
+                    break;
+            }
+            base.WndProc(ref m);
+        }
+
+        //注册热键的api
+        [DllImport("user32")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint control, Keys vk);
+        //解除注册热键的api
+        [DllImport("user32")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
     }
 
 

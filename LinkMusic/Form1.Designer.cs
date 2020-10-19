@@ -85,14 +85,14 @@ namespace LinkMusic
             // 
             this.playPauseToolStripMenuItem.Name = "playPauseToolStripMenuItem";
             this.playPauseToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.playPauseToolStripMenuItem.Text = "Play";
+            this.playPauseToolStripMenuItem.Text = "Play(Ctrl+Alt+Up)";
             this.playPauseToolStripMenuItem.Click += new System.EventHandler(this.PlayPauseToolStripMenuItem_Click);
             // 
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
             this.pauseToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.pauseToolStripMenuItem.Text = "Pause";
+            this.pauseToolStripMenuItem.Text = "Pause(Ctrl+Alt+Down)";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.PauseToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
@@ -106,14 +106,14 @@ namespace LinkMusic
             // 
             this.prevToolStripMenuItem.Name = "prevToolStripMenuItem";
             this.prevToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.prevToolStripMenuItem.Text = "Prev";
+            this.prevToolStripMenuItem.Text = "Prev(Ctrl+Alt+Left)";
             this.prevToolStripMenuItem.Click += new System.EventHandler(this.PrevToolStripMenuItem_Click);
             // 
             // nextToolStripMenuItem
             // 
             this.nextToolStripMenuItem.Name = "nextToolStripMenuItem";
             this.nextToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.nextToolStripMenuItem.Text = "Next";
+            this.nextToolStripMenuItem.Text = "Next(Ctrl+Alt+Right)";
             this.nextToolStripMenuItem.Click += new System.EventHandler(this.NextToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
@@ -136,6 +136,8 @@ namespace LinkMusic
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Set adb device";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
